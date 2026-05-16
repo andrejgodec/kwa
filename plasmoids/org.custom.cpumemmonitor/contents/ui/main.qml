@@ -44,9 +44,9 @@ PlasmoidItem {
     Sensors.Sensor { id: swapTotalSensor;sensorId: "memory/swap/total";                          updateRateLimit: 2000 }
     Sensors.Sensor { id: netDownSensor;  sensorId: "network/all/download";                       updateRateLimit: 2000 }
     Sensors.Sensor { id: netUpSensor;    sensorId: "network/all/upload";                         updateRateLimit: 2000 }
-    Sensors.Sensor { id: cpuTempSensor;  sensorId: "lmsensors/k10temp-pci-00c3/Tctl/value";     updateRateLimit: 2000 }
-    Sensors.Sensor { id: gpuTempSensor;  sensorId: "lmsensors/amdgpu-pci-c300/edge/value";      updateRateLimit: 2000 }
-    Sensors.Sensor { id: nvmeTempSensor; sensorId: "lmsensors/nvme-pci-0200/Composite/value";   updateRateLimit: 2000 }
+    Sensors.Sensor { id: cpuTempSensor;  sensorId: "cpu/all/averageTemperature";          updateRateLimit: 2000 }
+    Sensors.Sensor { id: gpuTempSensor;  sensorId: "gpu/gpu1/temperature";               updateRateLimit: 2000 }
+    Sensors.Sensor { id: nvmeTempSensor; sensorId: "lmsensors/nvme-pci-0200/temp1";      updateRateLimit: 2000 }
 
     compactRepresentation: CompactRepresentation { }
     fullRepresentation:    FullRepresentation    { }

@@ -6,7 +6,7 @@ Custom KDE Plasma 6 plasmoids for Fedora.
 
 ## CPU & RAM Monitor
 
-A lightweight panel widget that shows live CPU and memory usage. Click it to expand a popup with progress bars.
+A lightweight panel widget showing live CPU and memory usage. Click to expand a popup with detailed stats.
 
 ### Preview
 
@@ -17,15 +17,20 @@ CPU 23% | RAM 61%
 
 **Popup (full view)**
 - CPU Usage ████████░░ 78%
+- CPU Temp 83 °C
+- GPU Temp 77 °C
+- NVMe Temp 62 °C
 - Memory — 9.2 / 15.6 GB (59%)
+- Swap — 0.0 / 8.0 GB (0%)
+- Network ↓ 1.2 MB/s   ↑ 120 KB/s
 - Updates every 2 seconds
 
-Colors adapt: green → yellow above 50% → red above 80%.
+Colors adapt: neutral → yellow above 50% → red above 80%.
 
 ### Requirements
 
 - KDE Plasma 6
-- Fedora (or any distro with `plasma-workspace`)
+- Fedora (or any distro with `plasma-workspace` and `lm_sensors`)
 
 ### Install
 
@@ -52,13 +57,21 @@ kquitapp6 plasmashell; sleep 2; plasmashell --replace &
 plasmoids/org.custom.cpumemmonitor/
 ├── metadata.json          # Plasmoid ID and metadata
 └── contents/ui/
-    ├── main.qml                   # Data engine — reads /proc/stat and /proc/meminfo
+    ├── main.qml                   # Sensors + data properties (ksystemstats)
     ├── CompactRepresentation.qml  # Panel view
     └── FullRepresentation.qml     # Popup view
 ```
 
 ### How it works
 
-- Reads `/proc/stat` to calculate CPU delta between 2-second intervals
-- Reads `/proc/meminfo` for total and available memory
-- No external dependencies — pure QML + KDE frameworks
+Uses `org.kde.ksysguard.sensors` to subscribe to live ksystemstats data:
+
+| Metric | Sensor ID |
+|--------|-----------|
+| CPU usage | `cpu/all/usage` |
+| CPU temp | `cpu/all/averageTemperature` |
+| GPU temp | `gpu/gpu1/temperature` |
+| NVMe temp | `lmsensors/nvme-pci-0200/temp1` |
+| RAM used/total | `memory/physical/used` / `memory/physical/total` |
+| Swap used/total | `memory/swap/used` / `memory/swap/total` |
+| Network | `network/all/download` / `network/all/upload` |
