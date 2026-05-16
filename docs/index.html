@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KWA — KDE Widgets &amp; Applets</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #1a1b26;
+      --surface: #24283b;
+      --surface2: #2e3347;
+      --border: #414868;
+      --text: #c0caf5;
+      --muted: #6b7aa4;
+      --accent: #7aa2f7;
+      --green: #9ece6a;
+      --yellow: #e0af68;
+      --red: #f7768e;
+      --radius: 10px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, #1a1b26 0%, #24283b 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 3rem 1.5rem 2.5rem;
+      text-align: center;
+    }
+    header .badge {
+      display: inline-block;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 0.75rem;
+      padding: 0.2rem 0.8rem;
+      color: var(--muted);
+      margin-bottom: 1rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    header h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+    header h1 span { color: var(--accent); }
+    header p {
+      margin-top: 0.75rem;
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 480px;
+      margin-inline: auto;
+    }
+    header .actions {
+      margin-top: 1.75rem;
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.6rem 1.3rem;
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.85; text-decoration: none; }
+    .btn-primary { background: var(--accent); color: #1a1b26; }
+    .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+
+    /* ── Layout ── */
+    main {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    section h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 1rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── Widget Preview ── */
+    .preview-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 540px) { .preview-grid { grid-template-columns: 1fr; } }
+
+    .panel-mockup {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+    }
+    .panel-mockup .label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.75rem;
+    }
+
+    /* compact bar */
+    .compact-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.35rem 0.75rem;
+      width: fit-content;
+    }
+    .compact-bar .metric { text-align: center; }
+    .compact-bar .metric .cap { font-size: 0.6rem; color: var(--muted); }
+    .compact-bar .metric .val { font-size: 0.8rem; font-weight: 700; }
+    .compact-bar .sep { width: 1px; height: 18px; background: var(--border); }
+
+    /* popup */
+    .popup {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .row { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+    .row-label { font-size: 0.82rem; font-weight: 600; white-space: nowrap; }
+    .row-value { font-size: 0.82rem; color: var(--muted); text-align: right; }
+    .bar-wrap { display: flex; flex-direction: column; gap: 0.3rem; }
+    .progress { height: 6px; border-radius: 3px; background: var(--surface2); overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 3px; }
+    .fill-green  { background: var(--green); }
+    .fill-yellow { background: var(--yellow); }
+    .fill-red    { background: var(--red); }
+
+    .temp-row { display: flex; align-items: center; justify-content: space-between; }
+    .temp-label { font-size: 0.82rem; font-weight: 600; }
+    .temp-value { font-size: 0.82rem; }
+    .t-ok     { color: var(--green); }
+    .t-warm   { color: var(--yellow); }
+    .t-hot    { color: var(--red); }
+
+    .divider { height: 1px; background: var(--border); margin: 0.1rem 0; }
+    .net-row { display: flex; justify-content: space-between; font-size: 0.82rem; }
+    .net-label { font-weight: 600; }
+    .footer-note { font-size: 0.68rem; color: var(--muted); text-align: right; margin-top: 0.25rem; }
+
+    /* ── Sensor Table ── */
+    .sensor-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    .sensor-table th {
+      text-align: left;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .sensor-table td {
+      padding: 0.55rem 0.75rem;
+      border-bottom: 1px solid var(--surface2);
+    }
+    .sensor-table tr:last-child td { border-bottom: none; }
+    .sensor-table code {
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.8rem;
+      color: var(--accent);
+      background: var(--surface2);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+    }
+
+    /* ── Install ── */
+    pre {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      overflow-x: auto;
+      font-family: 'Cascadia Code', 'Fira Code', monospace;
+      font-size: 0.82rem;
+      line-height: 1.7;
+      color: var(--green);
+    }
+    pre .comment { color: var(--muted); }
+
+    /* ── Requirements ── */
+    .req-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .req-list li {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+    }
+    .req-list li::before { content: "✓"; color: var(--green); font-weight: 700; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 2rem 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="badge">KDE Plasma 6 · Fedora</div>
+  <h1>KWA — <span>KDE Widgets</span> &amp; Applets</h1>
+  <p>A lightweight panel widget showing live CPU, memory, thermals, and network — updated every 2 seconds.</p>
+  <div class="actions">
+    <a class="btn btn-primary" href="https://github.com/andrejgodec/kwa">
+      &#128279; View on GitHub
+    </a>
+    <a class="btn btn-secondary" href="https://github.com/andrejgodec/kwa/archive/refs/heads/main.zip">
+      &#11123; Download ZIP
+    </a>
+  </div>
+</header>
+
+<main>
+
+  <!-- Preview -->
+  <section>
+    <h2>Preview</h2>
+    <div class="preview-grid">
+
+      <div class="panel-mockup">
+        <div class="label">Panel — compact view</div>
+        <div class="compact-bar">
+          <div class="metric">
+            <div class="cap">CPU</div>
+            <div class="val" style="color:#e0af68">23%</div>
+          </div>
+          <div class="sep"></div>
+          <div class="metric">
+            <div class="cap">RAM</div>
+            <div class="val" style="color:#e0af68">61%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-mockup">
+        <div class="label">Popup — full view</div>
+        <div class="popup">
+          <div class="bar-wrap">
+            <div class="row">
+              <span class="row-label">CPU Usage</span>
+              <span class="row-value">78%</span>
+            </div>
+            <div class="progress"><div class="progress-fill fill-red" style="width:78%"></div></div>
+          </div>
+          <div class="divider"></div>
+          <div class="temp-row">
+            <span class="temp-label">CPU Temp</span>
+            <span class="temp-value t-hot">83 °C</span>
+          </div>
+          <div class="temp-row">
+            <span class="temp-label">GPU Temp</span>
+            <span class="temp-value t-warm">77 °C</span>
+          </div>
+          <div class="temp-row">
+            <span class="temp-label">NVMe Temp</span>
+            <span class="temp-value t-ok">62 °C</span>
+          </div>
+          <div class="divider"></div>
+          <div class="bar-wrap">
+            <div class="row">
+              <span class="row-label">Memory</span>
+              <span class="row-value">9.2 / 15.6 GB (59%)</span>
+            </div>
+            <div class="progress"><div class="progress-fill fill-yellow" style="width:59%"></div></div>
+          </div>
+          <div class="bar-wrap">
+            <div class="row">
+              <span class="row-label">Swap</span>
+              <span class="row-value">0.0 / 8.0 GB (0%)</span>
+            </div>
+            <div class="progress"><div class="progress-fill fill-green" style="width:0%"></div></div>
+          </div>
+          <div class="divider"></div>
+          <div class="net-row">
+            <span class="net-label">Network</span>
+            <span>↓ 1.2 MB/s &nbsp; ↑ 120 KB/s</span>
+          </div>
+          <div class="footer-note">Updates every 2 s</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Sensor IDs -->
+  <section>
+    <h2>Sensor IDs</h2>
+    <table class="sensor-table">
+      <thead>
+        <tr><th>Metric</th><th>ksystemstats sensor ID</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>CPU usage</td><td><code>cpu/all/usage</code></td></tr>
+        <tr><td>CPU temperature</td><td><code>cpu/all/averageTemperature</code></td></tr>
+        <tr><td>GPU temperature</td><td><code>gpu/gpu1/temperature</code></td></tr>
+        <tr><td>NVMe temperature</td><td><code>lmsensors/nvme-pci-0200/temp1</code></td></tr>
+        <tr><td>RAM used / total</td><td><code>memory/physical/used</code> / <code>memory/physical/total</code></td></tr>
+        <tr><td>Swap used / total</td><td><code>memory/swap/used</code> / <code>memory/swap/total</code></td></tr>
+        <tr><td>Network down / up</td><td><code>network/all/download</code> / <code>network/all/upload</code></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Install -->
+  <section>
+    <h2>Install</h2>
+    <pre><span class="comment"># Clone and symlink into Plasma's plasmoid directory</span>
+git clone https://github.com/andrejgodec/kwa.git
+cd kwa
+ln -sf "$PWD/plasmoids/org.custom.cpumemmonitor" \
+       ~/.local/share/plasma/plasmoids/org.custom.cpumemmonitor
+
+<span class="comment"># Restart Plasma shell to pick it up</span>
+kquitapp6 plasmashell; sleep 2; plasmashell --replace &</pre>
+    <p style="margin-top:0.75rem; font-size:0.85rem; color:var(--muted)">
+      Then: <strong style="color:var(--text)">Right-click panel → Add Widgets → search "CPU &amp; RAM Monitor" → drag to panel.</strong>
+    </p>
+  </section>
+
+  <!-- Requirements -->
+  <section>
+    <h2>Requirements</h2>
+    <ul class="req-list">
+      <li>KDE Plasma 6</li>
+      <li>Fedora (or any distro with <code style="font-family:monospace;font-size:0.85rem;color:var(--accent);background:var(--surface2);padding:0.1rem 0.35rem;border-radius:4px">plasma-workspace</code>)</li>
+      <li><code style="font-family:monospace;font-size:0.85rem;color:var(--accent);background:var(--surface2);padding:0.1rem 0.35rem;border-radius:4px">lm_sensors</code> installed and configured</li>
+    </ul>
+  </section>
+
+</main>
+
+<footer>
+  <p>KWA · <a href="https://github.com/andrejgodec/kwa">github.com/andrejgodec/kwa</a></p>
+</footer>
+
+</body>
+</html>
