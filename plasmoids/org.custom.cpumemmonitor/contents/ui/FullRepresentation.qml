@@ -1,13 +1,16 @@
 import QtQuick
 import QtQuick.Layouts
 import org.kde.plasma.components as PC3
+import org.kde.plasma.plasmoid
 import org.kde.kirigami as Kirigami
 
 Item {
-    Layout.minimumWidth:    Kirigami.Units.gridUnit * 16
-    Layout.minimumHeight:   Kirigami.Units.gridUnit * 20
-    Layout.preferredWidth:  Kirigami.Units.gridUnit * 22
-    Layout.preferredHeight: Kirigami.Units.gridUnit * 26
+    id: popupRoot
+
+    Layout.minimumWidth:   Kirigami.Units.gridUnit * 16
+    Layout.minimumHeight:  Kirigami.Units.gridUnit * 12
+    Layout.preferredWidth:  Plasmoid.configuration.popupWidth
+    Layout.preferredHeight: Plasmoid.configuration.popupHeight
 
     function tempColor(t) {
         return t > 85 ? Kirigami.Theme.negativeTextColor
@@ -15,8 +18,11 @@ Item {
              :           Kirigami.Theme.textColor
     }
 
-    function tempStr(t) {
-        return t > 0 ? t + " °C" : "—"
+    function tempStr(celsius) {
+        if (celsius <= 0) return "—"
+        if (Plasmoid.configuration.tempUnit === "F")
+            return Math.round(celsius * 9 / 5 + 32) + " °F"
+        return celsius + " °C"
     }
 
     ColumnLayout {
@@ -40,7 +46,7 @@ Item {
             PC3.ProgressBar { Layout.fillWidth: true; value: root.cpuPercent / 100 }
         }
 
-        // CPU temp
+        // CPU temp (always visible)
         RowLayout {
             Layout.fillWidth: true
             PC3.Label { text: "CPU Temp"; font.bold: true }
@@ -51,6 +57,7 @@ Item {
         // GPU temp
         RowLayout {
             Layout.fillWidth: true
+            visible: Plasmoid.configuration.showGpuTemp
             PC3.Label { text: "GPU Temp"; font.bold: true }
             Item { Layout.fillWidth: true }
             PC3.Label { text: tempStr(root.gpuTemp); color: tempColor(root.gpuTemp) }
@@ -59,6 +66,7 @@ Item {
         // NVMe temp
         RowLayout {
             Layout.fillWidth: true
+            visible: Plasmoid.configuration.showNvmeTemp
             PC3.Label { text: "NVMe Temp"; font.bold: true }
             Item { Layout.fillWidth: true }
             PC3.Label { text: tempStr(root.nvmeTemp); color: tempColor(root.nvmeTemp) }
@@ -85,7 +93,7 @@ Item {
         ColumnLayout {
             Layout.fillWidth: true
             spacing: Kirigami.Units.smallSpacing
-            visible: root.swapAvailable
+            visible: Plasmoid.configuration.showSwap && root.swapAvailable
             RowLayout {
                 Layout.fillWidth: true
                 PC3.Label { text: "Swap"; font.bold: true }
@@ -102,6 +110,7 @@ Item {
         // Network
         RowLayout {
             Layout.fillWidth: true
+            visible: Plasmoid.configuration.showNetwork
             PC3.Label { text: "Network"; font.bold: true }
             Item { Layout.fillWidth: true }
             PC3.Label { text: "↓ " + root.netDownStr + "/s   ↑ " + root.netUpStr + "/s" }
@@ -114,6 +123,48 @@ Item {
             text: "Updates every 2 s"
             font.pixelSize: Kirigami.Units.gridUnit * 0.65
             color: Kirigami.Theme.disabledTextColor
+        }
+    }
+
+    // Resize grip
+    MouseArea {
+        id: resizeGrip
+        width: 20; height: 20
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        cursorShape: Qt.SizeFDiagCursor
+        hoverEnabled: true
+
+        property real startGX: 0
+        property real startGY: 0
+        property int  startW:  0
+        property int  startH:  0
+
+        onPressed: (e) => {
+            const g = mapToGlobal(e.x, e.y)
+            startGX = g.x; startGY = g.y
+            startW = popupRoot.width; startH = popupRoot.height
+        }
+        onPositionChanged: (e) => {
+            if (!pressed) return
+            const g = mapToGlobal(e.x, e.y)
+            const minW = Kirigami.Units.gridUnit * 16
+            const minH = Kirigami.Units.gridUnit * 12
+            Plasmoid.configuration.popupWidth  = Math.max(minW, startW + g.x - startGX)
+            Plasmoid.configuration.popupHeight = Math.max(minH, startH + g.y - startGY)
+        }
+
+        // Three-dot diagonal indicator
+        Repeater {
+            model: 3
+            Rectangle {
+                required property int index
+                width: 2; height: 2; radius: 1
+                color: Kirigami.Theme.textColor
+                opacity: resizeGrip.containsMouse ? 0.6 : 0.25
+                x: resizeGrip.width  - 4 - index * 5
+                y: resizeGrip.height - 4 - index * 5
+            }
         }
     }
 }

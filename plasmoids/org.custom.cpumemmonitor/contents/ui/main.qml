@@ -31,12 +31,6 @@ PlasmoidItem {
         return Math.round(b) + " B"
     }
 
-    function tempColor(t) {
-        return t > 85 ? Kirigami.Theme.negativeTextColor
-             : t > 70 ? Kirigami.Theme.neutralTextColor
-             :           Kirigami.Theme.textColor
-    }
-
     Sensors.Sensor { id: cpuSensor;      sensorId: "cpu/all/usage";                              updateRateLimit: 2000 }
     Sensors.Sensor { id: memUsedSensor;  sensorId: "memory/physical/used";                       updateRateLimit: 2000 }
     Sensors.Sensor { id: memTotalSensor; sensorId: "memory/physical/total";                      updateRateLimit: 2000 }
