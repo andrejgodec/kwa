@@ -216,6 +216,37 @@
     }
     pre .comment { color: var(--muted); }
 
+    /* ── Config Table ── */
+    .config-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    .config-table th {
+      text-align: left;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .config-table td {
+      padding: 0.55rem 0.75rem;
+      border-bottom: 1px solid var(--surface2);
+    }
+    .config-table tr:last-child td { border-bottom: none; }
+    .config-note {
+      margin-top: 0.9rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    .config-note::before { content: "↔"; color: var(--accent); flex-shrink: 0; }
+
     /* ── Requirements ── */
     .req-list {
       display: flex;
@@ -329,21 +360,42 @@
     </div>
   </section>
 
+  <!-- Configuration -->
+  <section>
+    <h2>Configuration</h2>
+    <p style="font-size:0.9rem;color:var(--muted);margin-bottom:1rem">
+      Right-click the widget → <strong style="color:var(--text)">Configure CPU &amp; RAM Monitor</strong>
+    </p>
+    <table class="config-table">
+      <thead>
+        <tr><th>Setting</th><th>Options</th><th>Default</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Temperature unit</td><td>Celsius (°C) / Fahrenheit (°F)</td><td>°C</td></tr>
+        <tr><td>Show GPU temperature</td><td>on / off</td><td>on</td></tr>
+        <tr><td>Show NVMe temperature</td><td>on / off</td><td>on</td></tr>
+        <tr><td>Show Swap</td><td>on / off</td><td>on</td></tr>
+        <tr><td>Show Network</td><td>on / off</td><td>on</td></tr>
+      </tbody>
+    </table>
+    <p class="config-note">The popup is resizable — drag the grip in the bottom-right corner. Size is saved across sessions.</p>
+  </section>
+
   <!-- Sensor IDs -->
   <section>
     <h2>Sensor IDs</h2>
     <table class="sensor-table">
       <thead>
-        <tr><th>Metric</th><th>ksystemstats sensor ID</th></tr>
+        <tr><th>Metric</th><th>ksystemstats sensor ID</th><th>Toggleable</th></tr>
       </thead>
       <tbody>
-        <tr><td>CPU usage</td><td><code>cpu/all/usage</code></td></tr>
-        <tr><td>CPU temperature</td><td><code>cpu/all/averageTemperature</code></td></tr>
-        <tr><td>GPU temperature</td><td><code>gpu/gpu1/temperature</code></td></tr>
-        <tr><td>NVMe temperature</td><td><code>lmsensors/nvme-pci-0200/temp1</code></td></tr>
-        <tr><td>RAM used / total</td><td><code>memory/physical/used</code> / <code>memory/physical/total</code></td></tr>
-        <tr><td>Swap used / total</td><td><code>memory/swap/used</code> / <code>memory/swap/total</code></td></tr>
-        <tr><td>Network down / up</td><td><code>network/all/download</code> / <code>network/all/upload</code></td></tr>
+        <tr><td>CPU usage</td><td><code>cpu/all/usage</code></td><td>—</td></tr>
+        <tr><td>CPU temperature</td><td><code>cpu/all/averageTemperature</code></td><td>—</td></tr>
+        <tr><td>GPU temperature</td><td><code>gpu/gpu1/temperature</code></td><td>yes</td></tr>
+        <tr><td>NVMe temperature</td><td><code>lmsensors/nvme-pci-0200/temp1</code></td><td>yes</td></tr>
+        <tr><td>RAM used / total</td><td><code>memory/physical/used</code> / <code>memory/physical/total</code></td><td>—</td></tr>
+        <tr><td>Swap used / total</td><td><code>memory/swap/used</code> / <code>memory/swap/total</code></td><td>yes</td></tr>
+        <tr><td>Network down / up</td><td><code>network/all/download</code> / <code>network/all/upload</code></td><td>yes</td></tr>
       </tbody>
     </table>
   </section>
