@@ -65,6 +65,6 @@ Item {
 
     MouseArea {
         anchors.fill: parent
-        onClicked: plasmoid.expanded = !plasmoid.expanded
+        onClicked: Plasmoid.expanded = !Plasmoid.expanded
     }
 }
