@@ -1,11 +1,12 @@
 import QtQuick
 import QtQuick.Layouts
 import org.kde.plasma.components as PC3
+import org.kde.plasma.plasmoid
 import org.kde.kirigami as Kirigami
 
 Item {
-    implicitWidth: row.implicitWidth + Kirigami.Units.smallSpacing * 2
-    implicitHeight: row.implicitHeight
+    Layout.fillHeight: true
+    Layout.preferredWidth: row.implicitWidth + Kirigami.Units.smallSpacing * 2
 
     RowLayout {
         id: row
@@ -60,5 +61,10 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
             }
         }
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        onClicked: plasmoid.expanded = !plasmoid.expanded
     }
 }
