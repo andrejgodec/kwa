@@ -1,0 +1,14 @@
+{
+    "KPlugin": {
+        "Authors": [{"Email": "", "Name": "Custom"}],
+        "Description": "CPU and Memory usage in the panel",
+        "Id": "org.custom.cpumemmonitor",
+        "Name": "CPU & RAM Monitor",
+        "Version": "1.0",
+        "Website": "",
+        "Category": "System Information",
+        "License": "MIT"
+    },
+    "KPackageStructure": "Plasma/Applet",
+    "X-Plasma-API-Minimum-Version": "2.0"
+}
