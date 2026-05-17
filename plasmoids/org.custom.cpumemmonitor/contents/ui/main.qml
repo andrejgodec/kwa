@@ -31,16 +31,18 @@ PlasmoidItem {
         return Math.round(b) + " B"
     }
 
-    Sensors.Sensor { id: cpuSensor;      sensorId: "cpu/all/usage";                              updateRateLimit: 2000 }
-    Sensors.Sensor { id: memUsedSensor;  sensorId: "memory/physical/used";                       updateRateLimit: 2000 }
-    Sensors.Sensor { id: memTotalSensor; sensorId: "memory/physical/total";                      updateRateLimit: 2000 }
-    Sensors.Sensor { id: swapUsedSensor; sensorId: "memory/swap/used";                           updateRateLimit: 2000 }
-    Sensors.Sensor { id: swapTotalSensor;sensorId: "memory/swap/total";                          updateRateLimit: 2000 }
-    Sensors.Sensor { id: netDownSensor;  sensorId: "network/all/download";                       updateRateLimit: 2000 }
-    Sensors.Sensor { id: netUpSensor;    sensorId: "network/all/upload";                         updateRateLimit: 2000 }
-    Sensors.Sensor { id: cpuTempSensor;  sensorId: "cpu/all/averageTemperature";          updateRateLimit: 2000 }
-    Sensors.Sensor { id: gpuTempSensor;  sensorId: "gpu/gpu1/temperature";               updateRateLimit: 2000 }
-    Sensors.Sensor { id: nvmeTempSensor; sensorId: "lmsensors/nvme-pci-0200/temp1";      updateRateLimit: 2000 }
+    property int refreshRate: Plasmoid.configuration.refreshRate
+
+    Sensors.Sensor { id: cpuSensor;      sensorId: "cpu/all/usage";                        updateRateLimit: refreshRate }
+    Sensors.Sensor { id: memUsedSensor;  sensorId: "memory/physical/used";                 updateRateLimit: refreshRate }
+    Sensors.Sensor { id: memTotalSensor; sensorId: "memory/physical/total";                updateRateLimit: refreshRate }
+    Sensors.Sensor { id: swapUsedSensor; sensorId: "memory/swap/used";                     updateRateLimit: refreshRate }
+    Sensors.Sensor { id: swapTotalSensor;sensorId: "memory/swap/total";                    updateRateLimit: refreshRate }
+    Sensors.Sensor { id: netDownSensor;  sensorId: "network/all/download";                 updateRateLimit: refreshRate }
+    Sensors.Sensor { id: netUpSensor;    sensorId: "network/all/upload";                   updateRateLimit: refreshRate }
+    Sensors.Sensor { id: cpuTempSensor;  sensorId: "cpu/all/averageTemperature";           updateRateLimit: refreshRate }
+    Sensors.Sensor { id: gpuTempSensor;  sensorId: "gpu/gpu1/temperature";                 updateRateLimit: refreshRate }
+    Sensors.Sensor { id: nvmeTempSensor; sensorId: "lmsensors/nvme-pci-0200/temp1";       updateRateLimit: refreshRate }
 
     compactRepresentation: CompactRepresentation { }
     fullRepresentation:    FullRepresentation    { }

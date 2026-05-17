@@ -19,6 +19,9 @@
     <entry name="showNetwork" type="Bool">
       <default>true</default>
     </entry>
+    <entry name="refreshRate" type="Int">
+      <default>2000</default>
+    </entry>
     <entry name="popupWidth" type="Int">
       <default>352</default>
     </entry>
